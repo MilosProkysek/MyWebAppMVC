@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MyWebAppMVC.Data;
 
@@ -11,9 +12,11 @@ using MyWebAppMVC.Data;
 namespace MyWebAppMVC.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260225205717_ModelChanges20260219")]
+    partial class ModelChanges20260219
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -224,7 +227,7 @@ namespace MyWebAppMVC.Data.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("MyWebAppMVC.Models.Department", b =>
+            modelBuilder.Entity("MyWebAppMVC.Data.Department", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -239,36 +242,6 @@ namespace MyWebAppMVC.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Department");
-                });
-
-            modelBuilder.Entity("MyWebAppMVC.Models.Employee", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("DepartmentId")
-                        .HasColumnType("int")
-                        .HasColumnName("Department_id");
-
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.HasKey("Id")
-                        .HasName("PK__Employee__3214EC07F63AAA2E");
-
-                    b.HasIndex("DepartmentId");
-
-                    b.ToTable("Employee");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -320,22 +293,6 @@ namespace MyWebAppMVC.Data.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("MyWebAppMVC.Models.Employee", b =>
-                {
-                    b.HasOne("MyWebAppMVC.Models.Department", "Department")
-                        .WithMany("Employees")
-                        .HasForeignKey("DepartmentId")
-                        .IsRequired()
-                        .HasConstraintName("FK_Employee_Department");
-
-                    b.Navigation("Department");
-                });
-
-            modelBuilder.Entity("MyWebAppMVC.Models.Department", b =>
-                {
-                    b.Navigation("Employees");
                 });
 #pragma warning restore 612, 618
         }

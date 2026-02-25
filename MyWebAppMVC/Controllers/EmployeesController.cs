@@ -10,22 +10,23 @@ using MyWebAppMVC.Models;
 
 namespace MyWebAppMVC.Controllers
 {
-    public class DepartmentsController : Controller
+    public class EmployeesController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public DepartmentsController(ApplicationDbContext context)
+        public EmployeesController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: Departments
+        // GET: Employees
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Departments.ToListAsync());
+            var applicationDbContext = _context.Employees.Include(e => e.Department);
+            return View(await applicationDbContext.ToListAsync());
         }
 
-        // GET: Departments/Details/5
+        // GET: Employees/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -33,39 +34,42 @@ namespace MyWebAppMVC.Controllers
                 return NotFound();
             }
 
-            var department = await _context.Departments
+            var employee = await _context.Employees
+                .Include(e => e.Department)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (department == null)
+            if (employee == null)
             {
                 return NotFound();
             }
 
-            return View(department);
+            return View(employee);
         }
 
-        // GET: Departments/Create
+        // GET: Employees/Create
         public IActionResult Create()
         {
+            ViewData["DepartmentId"] = new SelectList(_context.Departments, "Id", "Name");
             return View();
         }
 
-        // POST: Departments/Create
+        // POST: Employees/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name")] Department department)
+        public async Task<IActionResult> Create([Bind("Id,FirstName,LastName,DepartmentId")] Employee employee)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(department);
+                _context.Add(employee);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(department);
+            ViewData["DepartmentId"] = new SelectList(_context.Departments, "Id", "Name", employee.DepartmentId);
+            return View(employee);
         }
 
-        // GET: Departments/Edit/5
+        // GET: Employees/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -73,22 +77,23 @@ namespace MyWebAppMVC.Controllers
                 return NotFound();
             }
 
-            var department = await _context.Departments.FindAsync(id);
-            if (department == null)
+            var employee = await _context.Employees.FindAsync(id);
+            if (employee == null)
             {
                 return NotFound();
             }
-            return View(department);
+            ViewData["DepartmentId"] = new SelectList(_context.Departments, "Id", "Name", employee.DepartmentId);
+            return View(employee);
         }
 
-        // POST: Departments/Edit/5
+        // POST: Employees/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] Department department)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,FirstName,LastName,DepartmentId")] Employee employee)
         {
-            if (id != department.Id)
+            if (id != employee.Id)
             {
                 return NotFound();
             }
@@ -97,12 +102,12 @@ namespace MyWebAppMVC.Controllers
             {
                 try
                 {
-                    _context.Update(department);
+                    _context.Update(employee);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!DepartmentExists(department.Id))
+                    if (!EmployeeExists(employee.Id))
                     {
                         return NotFound();
                     }
@@ -113,10 +118,11 @@ namespace MyWebAppMVC.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(department);
+            ViewData["DepartmentId"] = new SelectList(_context.Departments, "Id", "Name", employee.DepartmentId);
+            return View(employee);
         }
 
-        // GET: Departments/Delete/5
+        // GET: Employees/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -124,34 +130,35 @@ namespace MyWebAppMVC.Controllers
                 return NotFound();
             }
 
-            var department = await _context.Departments
+            var employee = await _context.Employees
+                .Include(e => e.Department)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (department == null)
+            if (employee == null)
             {
                 return NotFound();
             }
 
-            return View(department);
+            return View(employee);
         }
 
-        // POST: Departments/Delete/5
+        // POST: Employees/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var department = await _context.Departments.FindAsync(id);
-            if (department != null)
+            var employee = await _context.Employees.FindAsync(id);
+            if (employee != null)
             {
-                _context.Departments.Remove(department);
+                _context.Employees.Remove(employee);
             }
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool DepartmentExists(int id)
+        private bool EmployeeExists(int id)
         {
-            return _context.Departments.Any(e => e.Id == id);
+            return _context.Employees.Any(e => e.Id == id);
         }
     }
 }
