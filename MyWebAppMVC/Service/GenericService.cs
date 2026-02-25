@@ -1,42 +1,25 @@
-﻿using Microsoft.EntityFrameworkCore;
-using MyWebAppMVC.Data;
+﻿using MyWebAppMVC.Repository;
 
 namespace MyWebAppMVC.Service
 {
-    public class GenericService<T>(ApplicationDbContext context) : IGenericService<T> where T : class
+    public class GenericService<T>(IGenericRepository<T> repository) : IGenericService<T> where T : class
     {
-        private readonly DbSet<T> _dbSet = context.Set<T>();
-
         public IEnumerable<T> GetAll()
-            => [.. _dbSet];
+            => repository.GetAll();
 
         public T? GetById(int id)
-            => _dbSet.Find(id);
+            => repository.GetById(id);
 
         public T Create(T entity)
-        {
-            _dbSet.Add(entity);
-            context.SaveChanges();
-            return entity;
-        }
+            => repository.Add(entity);
 
         public void Update(T entity)
-        {
-            _dbSet.Update(entity);
-            context.SaveChanges();
-        }
+            => repository.Update(entity);
 
         public void Delete(int id)
-        {
-            var entity = _dbSet.Find(id);
-            if (entity is not null)
-            {
-                _dbSet.Remove(entity);
-                context.SaveChanges();
-            }
-        }
+            => repository.Delete(id);
 
         public bool Exists(int id)
-            => _dbSet.Find(id) is not null;
+            => repository.Exists(id);
     }
 }
