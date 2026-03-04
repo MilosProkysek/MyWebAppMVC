@@ -10,6 +10,12 @@ namespace MyWebAppMVC.Data
 
         public virtual DbSet<Employee> Employees { get; set; }
 
+        public virtual DbSet<Product> Products { get; set; }
+
+        public virtual DbSet<Category> Categories { get; set; }
+
+        public virtual DbSet<Supplier> Suppliers { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -22,6 +28,15 @@ namespace MyWebAppMVC.Data
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Employee_Department");
             });
+
+            modelBuilder.Entity<Product>()
+            .Property(p => p.Price)
+            .HasColumnType("decimal(18,2)");
+
+            modelBuilder.Entity<Product>()
+                .Property(p => p.RowVersion)
+                .IsRowVersion();
+
         }
     }
 }
