@@ -35,7 +35,11 @@ builder.Services.AddScoped<IGenericService<Supplier>, GenericService<Supplier>>(
 // Product — specialized repository & service
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IProductService, ProductService>();
-builder.Services.AddScoped<IProductServiceDTO, ProductServiceDTO>();
+//builder.Services.AddScoped<IProductServiceDTO, ProductServiceDTO>();
+builder.Services.AddScoped<IProductServiceDTO, ProductServiceAutomapper>();
+
+//builder.Services.AddAutoMapper(typeof(ProductProfile).Assembly);
+builder.Services.AddAutoMapper(cfg => cfg.AddProfile<ProductProfile>());
 
 var app = builder.Build();
 

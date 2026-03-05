@@ -1,8 +1,11 @@
+using AutoMapper;
 using MyWebAppMVC.Contracts.ViewModels.Category;
 using MyWebAppMVC.Contracts.ViewModels.Products;
 using MyWebAppMVC.Contracts.ViewModels.Supplier;
 using MyWebAppMVC.Models;
 using MyWebAppMVC.Repository;
+
+using AutoMapper;
 
 namespace MyWebAppMVC.Service
 {
@@ -98,5 +101,5 @@ namespace MyWebAppMVC.Service
             entity.CategoryId = dto.CategoryId;
             entity.SupplierId = dto.SupplierId;
         }
-    }
+    }   
 }
