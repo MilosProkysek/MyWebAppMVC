@@ -35,6 +35,7 @@ builder.Services.AddScoped<IGenericService<Supplier>, GenericService<Supplier>>(
 // Product — specialized repository & service
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<IProductServiceDTO, ProductServiceDTO>();
 
 var app = builder.Build();
 

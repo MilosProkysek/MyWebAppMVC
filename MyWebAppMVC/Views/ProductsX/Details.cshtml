@@ -1,0 +1,36 @@
+﻿@model MyWebAppMVC.Contracts.ViewModels.Products.ProductDetailDto
+
+@{
+    ViewData["Title"] = "Product Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>Product</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">Name</dt>
+        <dd class="col-sm-10">@Model.Name</dd>
+
+        <dt class="col-sm-2">Price</dt>
+        <dd class="col-sm-10">@Model.Price.ToString("C")</dd>
+
+        <dt class="col-sm-2">Active</dt>
+        <dd class="col-sm-10">@(Model.IsActive ? "Yes" : "No")</dd>
+
+        <dt class="col-sm-2">Category</dt>
+        <dd class="col-sm-10">@Model.Category.Name</dd>
+
+        <dt class="col-sm-2">Supplier</dt>
+        <dd class="col-sm-10">@Model.Supplier.Name</dd>
+
+        <dt class="col-sm-2">Country</dt>
+        <dd class="col-sm-10">@(Model.Supplier.Country ?? "—")</dd>
+    </dl>
+</div>
+
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-secondary">Edit</a> |
+    <a asp-action="Index" class="btn btn-link">Back to List</a>
+</div>

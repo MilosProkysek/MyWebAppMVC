@@ -1,5 +1,8 @@
 using MyWebAppMVC.Models;
 using MyWebAppMVC.Repository;
+using MyWebAppMVC.Contracts.ViewModels.Products;
+using MyWebAppMVC.Contracts.ViewModels.Category;
+using MyWebAppMVC.Contracts.ViewModels.Supplier;
 
 namespace MyWebAppMVC.Service
 {

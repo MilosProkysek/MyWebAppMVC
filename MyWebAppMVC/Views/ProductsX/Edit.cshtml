@@ -1,0 +1,60 @@
+﻿@model MyWebAppMVC.Contracts.ViewModels.Products.ProductDetailDto
+
+@{
+    ViewData["Title"] = "Edit Product";
+}
+
+<h1>Edit</h1>
+
+<h4>Product</h4>
+<hr />
+
+<div class="row">
+    <div class="col-md-4">
+        @* Route id is passed via asp-route-id; DTO fields are bound by name to ProductUpdateDto *@
+        <form asp-action="Edit" asp-route-id="@Model.Id">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group mb-3">
+                <label class="control-label">Name</label>
+                <input type="text" name="Name" value="@Model.Name" class="form-control" />
+            </div>
+
+            <div class="form-group mb-3">
+                <label class="control-label">Price</label>
+                <input type="number" name="Price" value="@Model.Price" step="0.01" class="form-control" />
+            </div>
+
+            <div class="form-group form-check mb-3">
+                @if (Model.IsActive)
+                {
+                    <input type="checkbox" name="IsActive" value="true" class="form-check-input" checked />
+                }
+                else
+                {
+                    <input type="checkbox" name="IsActive" value="true" class="form-check-input" />
+                }
+                <label class="form-check-label">Active</label>
+            </div>
+
+            <div class="form-group mb-3">
+                <label class="control-label">Category</label>
+                @Html.DropDownList("CategoryId", (SelectList)ViewBag.CategoryId, new { @class = "form-control" })
+            </div>
+
+            <div class="form-group mb-3">
+                <label class="control-label">Supplier</label>
+                @Html.DropDownList("SupplierId", (SelectList)ViewBag.SupplierId, new { @class = "form-control" })
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-link">Back to List</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}

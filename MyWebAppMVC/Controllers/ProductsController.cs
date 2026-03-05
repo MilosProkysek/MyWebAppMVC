@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using MyWebAppMVC.Contracts.ViewModels.Products;
 using MyWebAppMVC.Models;
 using MyWebAppMVC.Service;
 
@@ -13,7 +14,9 @@ namespace MyWebAppMVC.Controllers
     {
         // GET: Products
         public IActionResult Index()
-            => View(productService.GetAllWithDetails());
+        {         
+            return View(productService.GetAllWithDetails());
+        }
 
         // GET: Products/Details/5
         public IActionResult Details(int? id)
