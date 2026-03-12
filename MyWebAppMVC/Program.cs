@@ -7,8 +7,9 @@ using MyWebAppMVC.Service;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
+    ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
@@ -17,14 +18,31 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.Requ
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews();
 
-builder.Services.AddScoped<IGenericService<Department>, GenericService<Department>>();
-builder.Services.AddScoped<IGenericService<Employee>, GenericService<Employee>>();
+// Department
 builder.Services.AddScoped<IGenericRepository<Department>, GenericRepository<Department>>();
+builder.Services.AddScoped<IGenericService<Department>, GenericService<Department>>();
+
+// Employee
 builder.Services.AddScoped<IGenericRepository<Employee>, GenericRepository<Employee>>();
+builder.Services.AddScoped<IGenericService<Employee>, GenericService<Employee>>();
+
+// Category & Supplier — needed for Product dropdowns
+builder.Services.AddScoped<IGenericRepository<Category>, GenericRepository<Category>>();
+builder.Services.AddScoped<IGenericService<Category>, GenericService<Category>>();
+builder.Services.AddScoped<IGenericRepository<Supplier>, GenericRepository<Supplier>>();
+builder.Services.AddScoped<IGenericService<Supplier>, GenericService<Supplier>>();
+
+// Product — specialized repository & service
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<IProductService, ProductService>();
+//builder.Services.AddScoped<IProductServiceDTO, ProductServiceDTO>();
+builder.Services.AddScoped<IProductServiceDTO, ProductServiceAutomapper>();
+
+//builder.Services.AddAutoMapper(typeof(ProductProfile).Assembly);
+builder.Services.AddAutoMapper(cfg => cfg.AddProfile<ProductProfile>());
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseMigrationsEndPoint();
@@ -32,13 +50,11 @@ if (app.Environment.IsDevelopment())
 else
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
 app.UseHttpsRedirection();
 app.UseRouting();
-
 app.UseAuthorization();
 
 app.MapStaticAssets();

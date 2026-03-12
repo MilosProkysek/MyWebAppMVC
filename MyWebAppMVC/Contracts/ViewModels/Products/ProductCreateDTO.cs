@@ -1,0 +1,9 @@
+﻿namespace MyWebAppMVC.Contracts.ViewModels.Products
+{
+    public record ProductCreateDto(
+    string Name,
+    decimal Price,
+    int CategoryId,
+    int SupplierId
+);
+}
