@@ -1,5 +1,9 @@
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Microsoft.AspNetCore.Mvc;
+using MyWebAppMVC.Contracts.Common;
 using MyWebAppMVC.Contracts.ViewModels.Departments;
+using MyWebAppMVC.Extensions;
 using MyWebAppMVC.Models;
 using MyWebAppMVC.Service;
 
@@ -9,15 +13,26 @@ namespace MyWebAppMVC.Controllers.Api
     [Route("api/departments")]
     public class DepartmentsApiController(IGenericService<Department> service) : ControllerBase
     {
-        // GET: api/departments
+        // GET: api/departments?pageNumber=1&pageSize=10
         [HttpGet]
-        [ProducesResponseType<IEnumerable<DepartmentDto>>(StatusCodes.Status200OK)]
-        public ActionResult<IEnumerable<DepartmentDto>> GetAll()
+        [ProducesResponseType<PagedResult<DepartmentDto>>(StatusCodes.Status200OK)]
+        public ActionResult<PagedResult<DepartmentDto>> GetAll(
+            [FromQuery] PaginationQuery query,
+            [FromServices] IMapper mapper)
         {
-            var departments = service.GetAll()
-                .Select(d => new DepartmentDto(d.Id, d.Name));
 
-            return Ok(departments);
+            //var paged = service.GetPaged(query);
+
+            //var result = new PagedResult<DepartmentDto>(
+            //    paged.Items.Select(d => new DepartmentDto(d.Id, d.Name)),
+            //    paged.TotalCount,
+            //    query);
+
+            var result = service.GetAllQueryable()
+                .ProjectTo<DepartmentDto>(mapper.ConfigurationProvider)
+                .ToPagedResult(query);
+
+            return Ok(result);
         }
 
         // GET: api/departments/5

@@ -18,6 +18,9 @@ namespace MyWebAppMVC.Repository
         public IEnumerable<T> GetAll()
             => _dbSet.ToList();
 
+        public IQueryable<T> GetAllQueryable()
+            => _dbSet.AsNoTracking();
+
         // GET single entity by primary key
         public T? GetById(int id)
             => _dbSet.Find(id);

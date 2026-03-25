@@ -1,4 +1,7 @@
-﻿using MyWebAppMVC.Repository;
+﻿using Microsoft.EntityFrameworkCore;
+using MyWebAppMVC.Contracts.Common;
+using MyWebAppMVC.Extensions;
+using MyWebAppMVC.Repository;
 
 namespace MyWebAppMVC.Service
 {
@@ -6,6 +9,11 @@ namespace MyWebAppMVC.Service
     {
         public IEnumerable<T> GetAll()
             => repository.GetAll();
+        public PagedResult<T> GetPaged(PaginationQuery query)
+                    => repository.GetAllQueryable().ToPagedResult(query);
+
+        public IQueryable<T> GetAllQueryable()
+        => repository.GetAllQueryable();
 
         public T? GetById(int id)
             => repository.GetById(id);
@@ -21,5 +29,6 @@ namespace MyWebAppMVC.Service
 
         public bool Exists(int id)
             => repository.Exists(id);
+
     }
 }

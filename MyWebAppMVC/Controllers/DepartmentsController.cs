@@ -112,6 +112,12 @@ namespace MyWebAppMVC.Controllers
             _service.Delete(id);
             return RedirectToAction(nameof(Index));
         }
+
+        // GET: Departments/IndexAPI
+        public IActionResult IndexAPI()
+        {
+            return View();
+        }
     }
 }
 
