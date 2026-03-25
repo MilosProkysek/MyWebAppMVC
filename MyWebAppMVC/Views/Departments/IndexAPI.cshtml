@@ -1,0 +1,102 @@
+﻿@model IEnumerable<MyWebAppMVC.Models.Department>
+
+@{
+    ViewData["Title"] = "Departments (API)";
+}
+
+<h1>Departments <small class="text-muted fs-6">via REST API</small></h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+
+<table class="table" id="departments-table">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody id="departments-body">
+        <tr><td colspan="3" class="text-muted">Loading...</td></tr>
+    </tbody>
+</table>
+
+<!-- Pagination controls -->
+<nav>
+    <ul class="pagination" id="pagination"></ul>
+</nav>
+
+<div id="error-message" class="alert alert-danger d-none"></div>
+
+@section Scripts {
+<script>
+    const pageSize = 5;
+    let currentPage = 1;
+
+    async function loadDepartments(page) {
+        const errorBox = document.getElementById('error-message');
+        const tbody    = document.getElementById('departments-body');
+
+        try {
+            const response = await fetch(`/api/departments?pageNumber=${page}&pageSize=${pageSize}`);
+
+            if (!response.ok) {
+                throw new Error(`Server returned ${response.status}`);
+            }
+
+            const data = await response.json();  // PagedResult<DepartmentDto>
+
+            // ── Render rows ──────────────────────────────────────────────────
+            tbody.innerHTML = data.items.length === 0
+                ? '<tr><td colspan="3" class="text-muted">No departments found.</td></tr>'
+                : data.items.map(d => `
+                    <tr>
+                        <td>${d.id}</td>
+                        <td>${d.name}</td>
+                        <td>
+                            <a href="/Departments/Edit/${d.id}">Edit</a> |
+                            <a href="/Departments/Details/${d.id}">Details</a> |
+                            <a href="/Departments/Delete/${d.id}">Delete</a>
+                        </td>
+                    </tr>`).join('');
+
+            // ── Render pagination ─────────────────────────────────────────────
+            renderPagination(data.pageNumber, data.totalPages, data.totalCount);
+
+            currentPage = data.pageNumber;
+            errorBox.classList.add('d-none');
+
+        } catch (err) {
+            errorBox.textContent = `Failed to load departments: ${err.message}`;
+            errorBox.classList.remove('d-none');
+            tbody.innerHTML = '';
+        }
+    }
+
+    function renderPagination(pageNumber, totalPages, totalCount) {
+        const ul = document.getElementById('pagination');
+
+        ul.innerHTML = `
+            <li class="page-item ${pageNumber <= 1 ? 'disabled' : ''}">
+                <button class="page-link" onclick="loadDepartments(${pageNumber - 1})">← Prev</button>
+            </li>
+            ${Array.from({ length: totalPages }, (_, i) => i + 1).map(p => `
+                <li class="page-item ${p === pageNumber ? 'active' : ''}">
+                    <button class="page-link" onclick="loadDepartments(${p})">${p}</button>
+                </li>`).join('')}
+            <li class="page-item ${pageNumber >= totalPages ? 'disabled' : ''}">
+                <button class="page-link" onclick="loadDepartments(${pageNumber + 1})">Next →</button>
+            </li>
+            <li class="page-item disabled">
+                <span class="page-link text-muted">${totalCount} total</span>
+            </li>`;
+    }
+
+    // Load first page on startup
+    loadDepartments(currentPage);
+</script>
+}

@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using MyWebAppMVC.Data;
+using MyWebAppMVC.Mappings;
 using MyWebAppMVC.Models;
 using MyWebAppMVC.Repository;
 using MyWebAppMVC.Service;
@@ -39,7 +40,11 @@ builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IProductServiceDTO, ProductServiceAutomapper>();
 
 //builder.Services.AddAutoMapper(typeof(ProductProfile).Assembly);
-builder.Services.AddAutoMapper(cfg => cfg.AddProfile<ProductProfile>());
+builder.Services.AddAutoMapper(cfg =>
+{
+    cfg.AddProfile<ProductProfile>();
+    cfg.AddProfile<DepartmentProfile>();
+});
 
 var app = builder.Build();
 
